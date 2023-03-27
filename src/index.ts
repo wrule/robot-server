@@ -1,9 +1,11 @@
 import koa from 'koa';
 import robot from 'robotjs';
 
+const cors = require('@koa/cors');
+
 function main() {
   const app = new koa();
-  app.use((ctx) => {
+  app.use(cors()).use((ctx) => {
     try {
       const method = ctx.path.replace(/\//g, '');
       if (method in robot) {
