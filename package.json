@@ -9,5 +9,10 @@
   },
   "repository": "https://github.com/wrule/robot-server.git",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "@types/koa": "^2.13.5",
+    "koa": "^2.14.1",
+    "robotjs": "^0.6.0"
+  }
 }
