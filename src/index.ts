@@ -26,6 +26,7 @@ function main() {
       };
     }
   });
+  console.log('Server started at http://localhost:7195');
   app.listen(7195);
 }
 
