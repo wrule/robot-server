@@ -70,6 +70,9 @@ class ClashHub {
         // console.log(e);
       }
     });
+    server.on('error', (err) => {
+      console.error('Server error:', err);
+    });
     server.listen(port, () =>
       console.log(name, `socks5://127.0.0.1:${port}`, 'listening...')
     );
