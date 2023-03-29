@@ -1,4 +1,3 @@
-import fs from 'fs';
 import net from 'net';
 import axios from 'axios';
 
@@ -18,8 +17,8 @@ class ClashHub {
     try {
       const rsp = await axios.get(`${this.apiAddr}/proxies`);
       if (rsp.status === 200) return {
-        all: rsp.data.proxies.GLOBAL.all as string[],
         now: rsp.data.proxies.GLOBAL.now as string,
+        all: rsp.data.proxies.GLOBAL.all as string[],
       };
     } catch (e) {
       console.log(e);
@@ -57,19 +56,15 @@ class ClashHub {
         clientSocket.pipe(remoteSocket);
         remoteSocket.pipe(clientSocket);
         remoteSocket.on('error', (e) => {
-          // console.log(e);
-          try {
-            clientSocket.end();
-          } catch(e) {
-            console.log(1, e);
-          }
+          console.log(e);
+          clientSocket.end();
         });
       } catch (e) {
-        console.log(2, e);
+        console.log(e);
       }
     });
-    server.on('error', (err) => {
-      console.error('Server error:', err);
+    server.on('error', (e) => {
+      console.log(e);
     });
     server.listen(port, () =>
       console.log(name, `socks5://127.0.0.1:${port}`, 'listening...')
