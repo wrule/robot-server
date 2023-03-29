@@ -4,6 +4,18 @@ import { ClashHub } from './clashHub';
 
 const cors = require('@koa/cors');
 
+process.on('uncaughtException', (error, origin) => {
+  console.log('uncaughtException');
+  console.log(origin);
+  console.log(error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('unhandledRejection');
+  console.log(promise);
+  console.log(reason);
+});
+
 function main() {
   const hub = new ClashHub();
   hub.Start();

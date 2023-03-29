@@ -108,14 +108,3 @@ class ClashHub {
   }
 }
 
-process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
-  // 写入错误日志
-  // 执行某些代码
-});
-
-process.on('unhandledRejection', function (reason, promise) {
-  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
-  // 写入错误日志
-  // 执行某些代码
-});
