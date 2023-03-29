@@ -57,15 +57,17 @@ class ClashHub {
   private portBind(name: string, port: number) {
     const server = net.createServer(async (localSocket) => {
       try {
-        await this.setProxyCheck(name);
+        if (this.nowProxy !== name) {
+          await this.setProxyCheck(name);
+        }
         const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
         localSocket.pipe(remoteSocket).pipe(localSocket);
         remoteSocket.on('error', (e) => {
-          console.log(e);
+          // console.log(e);
           localSocket.destroy();
         });
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     });
     server.listen(port, () =>
@@ -75,11 +77,12 @@ class ClashHub {
 
   private async pollNowProxy() {
     try {
-      console.log('更新代理信息...');
       const proxies = await this.getProxies();
-      this.nowProxy = proxies.now;
       this.allProxys = proxies.all;
-      console.log('当前代理节点为:', this.nowProxy);
+      if (proxies.now !== this.nowProxy) {
+        this.nowProxy = proxies.now;
+        console.log('当前代理节点为:', this.nowProxy);
+      }
     } catch (e) {
       console.log(e);
     }
