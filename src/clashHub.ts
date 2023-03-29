@@ -29,6 +29,7 @@ class ClashHub {
   private async setProxy(name: string) {
     try {
       await axios.put(`${this.apiAddr}/proxies/GLOBAL`, { name });
+      return;
     } catch (e) {
       console.log(e);
     }
@@ -48,29 +49,23 @@ class ClashHub {
     );
   }
 
-  private portBind(port: number) {
+  private portBind(name: string, port: number) {
     const server = net.createServer(async (localSocket) => {
-      console.log(port, 1);
-      await this.wait(5000);
-      console.log(port, 2);
+      await this.setProxyCheck(name);
       const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
       localSocket.pipe(remoteSocket).pipe(localSocket);
-      remoteSocket.on('error', (err) => {
+      remoteSocket.on('error', (e) => {
+        console.log(e);
         localSocket.destroy();
       });
     });
-    server.listen(port, () => console.log('Forwarding server listening on port', port, '...'));
+    server.listen(port, () =>
+      console.log(name, `socks5://127.0.0.1:${port}`, 'listening...')
+    );
   }
-
-
 
   public async Start() {
     const proxies = await this.getProxies();
-    proxies.all.forEach((name, index) => {
-      console.log(name, this.basePort + index);
-      this.portBind(this.basePort + index);
-    });
-    // console.log(a.all.length);
-    // this.portBind(9912);
+    proxies.all.forEach((name, index) => this.portBind(name, this.basePort + index));
   }
 }
