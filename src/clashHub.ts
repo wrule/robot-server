@@ -56,12 +56,16 @@ class ClashHub {
   private portBind(name: string, port: number) {
     const server = net.createServer(async (localSocket) => {
       await this.setProxyCheck(name);
-      const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
-      localSocket.pipe(remoteSocket).pipe(localSocket);
-      remoteSocket.on('error', (e) => {
-        // console.log(e);
-        localSocket.destroy();
-      });
+      try {
+        const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
+        localSocket.pipe(remoteSocket).pipe(localSocket);
+        remoteSocket.on('error', (e) => {
+          console.log(e);
+          localSocket.destroy();
+        });
+      } catch (e) {
+        console.log(e);
+      }
     });
     server.listen(port, () =>
       console.log(name, `socks5://127.0.0.1:${port}`, 'listening...')
