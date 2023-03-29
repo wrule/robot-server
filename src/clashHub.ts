@@ -55,19 +55,24 @@ class ClashHub {
   }
 
   private portBind(name: string, port: number) {
-    const server = net.createServer(async (localSocket) => {
+    const server = net.createServer(async (clientSocket) => {
       try {
         if (this.nowProxy !== name) {
           await this.setProxyCheck(name);
         }
         const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
-        localSocket.pipe(remoteSocket).pipe(localSocket);
+        clientSocket.pipe(remoteSocket);
+        remoteSocket.pipe(clientSocket);
         remoteSocket.on('error', (e) => {
           // console.log(e);
-          localSocket.destroy();
+          try {
+            clientSocket.end();
+          } catch(e) {
+            console.log(1, e);
+          }
         });
       } catch (e) {
-        // console.log(e);
+        console.log(2, e);
       }
     });
     server.on('error', (err) => {
@@ -102,3 +107,15 @@ class ClashHub {
     );
   }
 }
+
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ' + err);
+  // 写入错误日志
+  // 执行某些代码
+});
+
+process.on('unhandledRejection', function (reason, promise) {
+  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+  // 写入错误日志
+  // 执行某些代码
+});
