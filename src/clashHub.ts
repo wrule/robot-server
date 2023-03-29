@@ -43,7 +43,7 @@ class ClashHub {
     if (proxies.now !== name) {
       throw '无法正确设置proxy，请检查clash配置';
     } else {
-      console.log('Set to', name);
+      console.log('代理节点切换为', name);
     }
   }
 
@@ -56,8 +56,8 @@ class ClashHub {
 
   private portBind(name: string, port: number) {
     const server = net.createServer(async (localSocket) => {
-      await this.setProxyCheck(name);
       try {
+        await this.setProxyCheck(name);
         const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
         localSocket.pipe(remoteSocket).pipe(localSocket);
         remoteSocket.on('error', (e) => {
@@ -89,8 +89,10 @@ class ClashHub {
   }
 
   public async Start() {
-    this.pollNowProxy();
-    const proxies = await this.getProxies();
-    proxies.all.forEach((name, index) => this.portBind(name, this.basePort + index));
+    await this.pollNowProxy();
+    this.allProxys.forEach(
+      (name, index) =>
+        this.portBind(name, this.basePort + index)
+    );
   }
 }
