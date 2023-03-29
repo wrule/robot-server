@@ -39,7 +39,11 @@ class ClashHub {
   private async setProxyCheck(name: string) {
     await this.setProxy(name);
     const proxies = await this.getProxies();
-    if (proxies.now !== name) throw '无法正确设置proxy，请检查clash配置';
+    if (proxies.now !== name) {
+      throw '无法正确设置proxy，请检查clash配置';
+    } else {
+      console.log('Set to', name);
+    }
   }
 
   private async wait(time = 10000) {
@@ -55,7 +59,7 @@ class ClashHub {
       const remoteSocket = net.connect(this.proxyPort, this.proxyHost);
       localSocket.pipe(remoteSocket).pipe(localSocket);
       remoteSocket.on('error', (e) => {
-        console.log(e);
+        // console.log(e);
         localSocket.destroy();
       });
     });
