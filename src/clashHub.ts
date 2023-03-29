@@ -9,9 +9,10 @@ class ClashHub {
     private readonly proxyHost = '127.0.0.1',
     private readonly proxyPort = 7890,
     private readonly basePort = 30000,
-  ) {
+  ) { }
 
-  }
+  private nowProxy = '';
+  private allProxys = [] as string[];
 
   private async getProxies() {
     try {
@@ -72,7 +73,23 @@ class ClashHub {
     );
   }
 
+  private async pollNowProxy() {
+    try {
+      console.log('更新代理信息...');
+      const proxies = await this.getProxies();
+      this.nowProxy = proxies.now;
+      this.allProxys = proxies.all;
+      console.log('当前代理节点为:', this.nowProxy);
+    } catch (e) {
+      console.log(e);
+    }
+    setTimeout(() => {
+      this.pollNowProxy();
+    }, 5000);
+  }
+
   public async Start() {
+    this.pollNowProxy();
     const proxies = await this.getProxies();
     proxies.all.forEach((name, index) => this.portBind(name, this.basePort + index));
   }
