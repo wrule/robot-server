@@ -5,9 +5,10 @@ import axios from 'axios';
 export
 class ClashHub {
   public constructor(
-    private apiAddr = 'http://127.0.0.1:9090',
-    private proxyHost = '127.0.0.1',
-    private proxyPort = 7890,
+    private readonly apiAddr = 'http://127.0.0.1:9090',
+    private readonly proxyHost = '127.0.0.1',
+    private readonly proxyPort = 7890,
+    private readonly basePort = 30000,
   ) {
 
   }
@@ -65,7 +66,11 @@ class ClashHub {
 
   public async Start() {
     const proxies = await this.getProxies();
+    proxies.all.forEach((name, index) => {
+      console.log(name, this.basePort + index);
+      this.portBind(this.basePort + index);
+    });
     // console.log(a.all.length);
-    this.portBind(9912);
+    // this.portBind(9912);
   }
 }
