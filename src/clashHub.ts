@@ -47,13 +47,6 @@ class ClashHub {
     }
   }
 
-  private async wait(time = 10000) {
-    return new Promise<void>(
-      (resolve) =>
-        setTimeout(() => resolve(), time)
-    );
-  }
-
   private portBind(name: string, port: number) {
     const server = net.createServer(async (clientSocket) => {
       try {
